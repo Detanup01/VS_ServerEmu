@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+    # allows manual trigger
+
+jobs:
+  linux:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    - name: Publish
+      run: dotnet publish VS_ServerEmu.csproj -c Release -o Out
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: VS Emu
+        path: Out
+        if-no-files-found: error
